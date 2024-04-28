@@ -1,0 +1,396 @@
+﻿@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Danh sách nhân viên";
+    List<string> BreadCrumb = new List<string>();
+    BreadCrumb.Add("<span class='breadcrumb-item'>Nhân viên</span>");
+    BreadCrumb.Add("<span class='breadcrumb-item active'> Danh sách</span>");
+    ViewBag.BreadCrumb = BreadCrumb;
+}
+
+<script src="~/assets/js/vendor/notifications/noty.min.js"></script>
+<script src="/libjs/plugins/jalert.js"></script>
+<script src="~/assets/js/vendor/ui/moment/moment.min.js"></script>
+<script src="~/assets/js/vendor/pickers/daterangepicker.js"></script>
+<script src="~/assets/js/vendor/pickers/datepicker.min.js"></script>
+<script src="~/assets/js/vendor/forms/selects/select2.min.js"></script>
+<script src="~/tpm/cropperjs/cropper.min.js"></script>
+@* <link href="~/tpm/cropperjs/cropper.min.css" rel="stylesheet" type="text/css"> *@
+<!-- Content area -->
+<div class="content" ng-controller="IndexController">
+    <!-- Search field -->
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-12">
+                    <div class="input-group">
+                        <div class="d-sm-flex align-items-sm-start"
+                             style="flex: 1 1 auto; margin-right: calc(.5 * var(--gutter-x));">
+                            <div class="form-control-feedback form-control-feedback-start flex-grow-1 mb-3 mb-sm-0">
+                                <input type="text" class="form-control" placeholder="Nhập thông tin để tìm kiếm"
+                                       ng-model="Employee.Search.Text">
+                                <div class="form-control-feedback-icon">
+                                    <i class="ph-magnifying-glass"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary"
+                                style="border-radius: var(--border-radius); margin-right: calc(.5 * var(--gutter-x));"
+                                ng-click="searchEmployees()" onClick="return false;">
+                            <i class="ph-magnifying-glass me-2"></i>
+                            Tìm Kiếm
+                        </button>
+                        <button type="button" class="btn btn-primary" ng-click="createEmployee()"
+                                onClick="return false;" data-bs-toggle="modal" data-bs-target="#modal_create_employee"
+                                style="border-radius: var(--border-radius);">
+                            <i class="ph-plus me-2"></i>
+                            Thêm Nhân Viên
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /search field -->
+
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th style="text-align:center">STT</th>
+                        <th style="text-align:center">Mã Nhân Viên</th>
+                        <th style="text-align:center; width: 4em">Avatar</th>
+                        <th style="text-align:center">Họ Tên - Giới tính - SĐT</th>
+                        <th style="text-align:center">Email</th>
+                        <th style="text-align:center">Chức vụ - Hình thức</th>
+                        <th style="text-align:center">Lần chỉnh sửa cuối</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @* AngularJs *@
+                    <tr ng-repeat="item in Employee.Filter = (Employee.Lst | filter: Employee.Search.CustomFilter) | limitTo: Employee.Pager.PageSize: Employee.Pager.StartIndex">
+                        <td style="text-align:center">{{$index + 1 + Employee.Pager.StartIndex}}</td>
+                        <td style="text-align:center">{{item.EmployeeID}}</td>
+                        <td style="text-align:center"><img style="height: 3em" src="{{item.Host}}{{item.Path}}" /></td>
+                        <td style="text-align:center">
+                            <div>{{item.FullName}}</div>
+                            <div>
+                                <span>GT: </span>
+                                <span style="font-weight: 700">{{item.GenderName}}</span>
+                                <span> - </span>
+                                <span>{{item.Phone}}</span>
+                            </div>
+                        </td>
+                        <td style="text-align:center">{{item.Email}}</td>
+                        <td style="text-align:center">
+                            <div>{{item.DepartmentName}} - {{item.PositionName}}</div>
+                            <div>{{item.EmployeeTypeName}}</div>
+                        </td>
+                        <td style="text-align:center">{{item.UpdatedDate | dateFormat: 'dd/MM/yyyy HH:mm'}}</td>
+                        <td style="text-align: center;vertical-align: middle; padding: 0px; margin: 0;">
+                            <a href="#"
+                               ng-click="Employee.Edit(item.EmployeeID, item.FirstName, item.LastName, item.FullName, item.DOB, item.StartDateWork, item.Phone, item.Email, item.DepartmentID, item.PositionID, item.GenderID, item.Host, item.Path)"
+                               data-bs-toggle="modal" data-bs-target="#modal_edit_employee">
+                                <i class="icon-pencil7 icon-08x" title="Cập nhật"></i>
+                            </a>
+                            <a href="#"
+                               ng-click="Employee.Delete(item.EmployeeID, $index + 1 + ServiceType.Pager.StartIndex)"
+                               class="text-danger">
+                                <i class="icon-bin icon-08x" title="Xóa"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr ng-show="Employee.Lst.length == 0" style="text-align:center">
+                        <td colspan="8">Không có dữ liệu</td>
+                    </tr>
+                    <tr ng-show="Employee.Lst.length > 0">
+                        <td colspan="8">
+                            <div style="text-align:right;padding:0px;">
+                                <pagination-style3 total-items="Employee.Lst.length" pager="Employee.Pager"
+                                                   fn-call-back="Employee.Search.Paging(PageClicked)"></pagination-style3>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    @*popup thêm nhân viên*@
+    <div id="modal_create_employee" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-full">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nhập thông tin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form action="#">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <input type="file" id="fileInput" style="display: none;" accept="image/x-png,image/png,image/jpeg,image/jpg">
+                                    <button type="button" class="btn btn-primary mb-1" ng-click="selectImage()">Chọn ảnh</button>
+                                    <div class="image-cropper-container content-group">
+                                        <img ng-src="{{imageSrc}}" alt="" id="imageDemo">
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-8">
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Họ</label>
+                                            <input type="text" ng-model="popupCreate.firstName" placeholder="Nguyễn"
+                                                   class="form-control" ng-change="popupCreate.FillFullName()">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Tên</label>
+                                            <input type="text" ng-model="popupCreate.lastName" placeholder="A"
+                                                   class="form-control" ng-change="popupCreate.FillFullName()">
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Họ và tên</label>
+                                            <input type="text" ng-model="popupCreate.fullName"
+                                                   placeholder="Nguyễn Văn A" class="form-control" disabled>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Giới tính</label>
+                                            <div>
+                                                <div class="form-check form-check-inline"
+                                                     ng-repeat="genderOption in Employee.Gender.Lst">
+                                                    <input type="radio" class="form-check-input" name="cr-i-l"
+                                                           id="cr_l_i_{{$index}}" ng-model="popupCreate.selectedGender"
+                                                           ng-value="genderOption.GenderID">
+                                                    <label class="form-check-label"
+                                                           for="cr_l_i_{{$index}}">{{genderOption.GenderName}}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Ngày sinh</label>
+                                            <div class="input-group">
+                                                <span class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="icon-calendar22"></i>
+                                                    </span>
+                                                </span>
+                                                <input type="text" ng-model="popupCreate.DOB"
+                                                       class="form-control daterange-single" value="03/18/2013"
+                                                       id="createDOB">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Ngày bắt đầu làm việc</label>
+                                            <div class="input-group">
+                                                <span class="input-group-prepend">
+                                                    <span class="input-group-text">
+                                                        <i class="icon-calendar22"></i>
+                                                    </span>
+                                                </span>
+                                                <input type="text" value="03/18/2013"
+                                                       ng-model="popupCreate.firstWorkDate"
+                                                       class="form-control daterange-single" id="createFWD">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Vị trí</label>
+                                            <select class="form-control select" ng-model="popupCreate.selectedPosition"
+                                                    ng-options="item.PositionName for item in Employee.Position.Lst">
+                                                <option value="" disabled selected>Chọn vị trí</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Phòng ban</label>
+                                            <select class="form-control select"
+                                                    ng-model="popupCreate.selectedDepartment"
+                                                    ng-options="item.DepartmentName for item in Employee.Department.Lst">
+                                                <option value="" disabled selected>Chọn phòng ban</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Email</label>
+                                            <input type="text" ng-model="popupCreate.email"
+                                                   placeholder="eugene@kopyov.com" class="form-control">
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Số điện thoại</label>
+                                            <input type="text" ng-model="popupCreate.phone"
+                                                   placeholder="+84-99-9999-9999" data-mask="+84-99-9999-9999"
+                                                   class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" ng-click="popupCreate.submitCreateForm()" onClick="return false;"
+                                class="btn btn-primary">
+                            Thêm
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    @*popup sửa nhân viên*@
+    <div id="modal_edit_employee" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-full">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Nhập để sửa thông tin</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form action="#">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <input type="file" id="fileInputEdit" style="display: none;" accept="image/x-png,image/png,image/jpeg,image/jpg">
+                                    <button type="button" class="btn btn-primary mb-1" ng-click="selectImageEdit()">Chọn ảnh</button>
+                                    <div id="image-container-edit" class="image-cropper-container content-group">
+                                        <img ng-src="{{imageSrcEdit}}" alt="" id="imageDemoEdit">
+                                    </div>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Họ</label>
+                                            <input type="text" ng-model="Employee.Edit.EmployeeEditIn4.FirstName"
+                                                   ng-change="FillFullName()" placeholder="Nguyễn" class="form-control"
+                                                   id="firstNameEdit">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Tên</label>
+                                            <input type="text" ng-model="Employee.Edit.EmployeeEditIn4.LastName"
+                                                   ng-change="FillFullName()" placeholder="A" class="form-control"
+                                                   id="lastNameEdit">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Họ và tên</label>
+                                            <input type="text" ng-model="Employee.Edit.EmployeeEditIn4.FullName"
+                                                   placeholder="Nguyễn Văn A" class="form-control" id="fullNameEdit" disabled>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Giới tính</label>
+                                            <div>
+                                                <div class="form-check form-check-inline"
+                                                     ng-repeat="genderOption in Employee.Gender.Lst">
+                                                    <input type="radio" class="form-check-input" name="cr-i-l"
+                                                           id="cr_l_i_{{$index}}" ng-model="Employee.Edit.EmployeeEditIn4.GenderID"
+                                                           ng-value="genderOption.GenderID">
+                                                    <label class="form-check-label"
+                                                           for="cr_l_i_{{$index}}">{{genderOption.GenderName}}</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Ngày sinh</label>
+                                            <div class="input-group">
+                                                <span class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="icon-calendar22"></i></span>
+                                                </span>
+                                                <input type="text" ng-model="Employee.Edit.EmployeeEditIn4.DOB"
+                                                       class="form-control daterange-single" value="03/18/2013" id="DOBEdit">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Ngày bắt đầu làm việc</label>
+                                            <div class="input-group">
+                                                <span class="input-group-prepend">
+                                                    <span class="input-group-text"><i class="icon-calendar22"></i></span>
+                                                </span>
+                                                <input type="text" value="03/18/2013"
+                                                       ng-model="Employee.Edit.EmployeeEditIn4.StartDateWork"
+                                                       class="form-control daterange-single" id="StartDateWorkEdit">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Ví trí</label>
+                                            <select class="form-control select"
+                                                    ng-model="Employee.Edit.EmployeeEditIn4.PositionID" id="selectedPositionEdit">
+                                                <option value="" disabled selected>Chọn vị trí</option>
+                                                <option ng-repeat="eitem in Employee.Position.Lst" value="{{eitem.PositionID}}">
+                                                    {{eitem.PositionName}}
+                                                </option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Phòng ban</label>
+                                            <select class="form-control select"
+                                                    ng-model="Employee.Edit.EmployeeEditIn4.DepartmentID"
+                                                    id="selectedDepartmentEdit">
+                                                <option value="" disabled selected>Chọn phòng ban</option>
+                                                <option ng-repeat="eitem in Employee.Department.Lst"
+                                                        value="{{eitem.DepartmentID}}">{{eitem.DepartmentName}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Email</label>
+                                            <input type="text" ng-model="Employee.Edit.EmployeeEditIn4.Email"
+                                                   placeholder="eugene@kopyov.com" class="form-control" id="emailEdit">
+                                        </div>
+
+                                        <div class="col-sm-6">
+                                            <label class="form-label">Số điện thoại</label>
+                                            <input type="text" ng-model="Employee.Edit.EmployeeEditIn4.Phone"
+                                                   placeholder="+84-99-9999-9999" data-mask="+84-99-9999-9999" class="form-control"
+                                                   id="phoneEdit">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" ng-click="popupEdit.submitEditForm()" onClick="return false;"
+                                class="btn btn-primary">
+                            Sửa
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- /content area -->
+@section jsScript {
+    <script src="~/script-handler/employee/index-controller.js"></script>
+}

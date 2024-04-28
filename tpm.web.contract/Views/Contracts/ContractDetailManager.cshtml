@@ -1,0 +1,126 @@
+﻿@{
+    List<string> BreadCrumb = new List<string>();
+    BreadCrumb.Add("<span class='breadcrumb-item'>Hợp đồng</span>");
+    BreadCrumb.Add("<span class='breadcrumb-item active'> Quản lý chi tiết hợp đồng</span>");
+    ViewBag.BreadCrumb = BreadCrumb;
+}
+<script src="~/assets/js/vendor/ui/moment/moment.min.js"></script>
+<script src="~/assets/js/vendor/pickers/daterangepicker.js"></script>
+<script src="~/assets/js/vendor/pickers/datepicker.min.js"></script>
+<script src="~/assets/js/vendor/forms/selects/select2.min.js"></script>
+<script src="~/assets/js/vendor/notifications/noty.min.js"></script>
+<script src="/libjs/plugins/jalert.js"></script>
+
+<div class="content" ng-controller="ContractDetailManagerController">
+    <div class="card card-body">
+        <div class="tabcontent" style="display: block;">
+            <div class="me-1" style="float: left;">
+                <a href="#" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">Lọc theo tình trạng hợp
+                    đồng</a>
+                <div class="dropdown-menu">
+                    <label class="dropdown-item">
+                        <input type="checkbox" class="form-check-input m-0 me-3"
+                            ng-model="selectedItems.contractStatus.completed">
+                        Hoàn thành
+                    </label>
+
+                    <label class="dropdown-item">
+                        <input type="checkbox" class="form-check-input m-0 me-3"
+                            ng-model="selectedItems.contractStatus.notCompleted">
+                        Chưa hoàn thành
+                    </label>
+                </div>
+            </div>
+
+            <div class="me-1" style="float: left;">
+                <a href="#" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">Lọc theo loại dịch vụ</a>
+                <div class="dropdown-menu dropdown-menu-scrollable">
+                    <label class="dropdown-item" ng-repeat="item in ContractDetail.ServiceTypeFilter">
+                        <input type="checkbox" class="form-check-input m-0 me-3"
+                            ng-model="selectedItems.serviceTypeID[item.Service_Type_ID]">
+                        {{item.Name}}
+                    </label>
+                </div>
+            </div>
+
+            <div class="me-1" style="float: left;">
+                <a href="#" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">Lọc theo tên nhân viên</a>
+                <div class="dropdown-menu dropdown-menu-scrollable">
+                    <label class="dropdown-item" ng-repeat="item in ContractDetail.EmployeeFullNameFilter">
+                        <input type="checkbox" class="form-check-input m-0 me-3"
+                            ng-model="selectedItems.employeeID[item.EmployeeID]">
+                        {{item.FullName}}
+                    </label>
+                </div>
+            </div>
+
+            <div class="me-1" style="float: left;">
+                <button type="button" class="btn btn-primary" ng-click="ContractDetail.Filter(1)" width="max-width">
+                    <i class="ph-funnel me-2"></i>
+                    Lọc
+                </button>
+            </div>
+        </div>
+
+        <div class="tabcontent" style="display: block;">
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr style="text-align: center">
+                                <th>Hợp đồng - Người đại diện</th>
+                                <th>Nhân viên ký</th>
+                                <th>Loại dịch vụ</th>
+                                <th>Tiến độ</th>
+                                <th>Tình trạng dịch vụ</th>
+                                <th>Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in ContractDetail.ProgressTable">
+                                <td ng-show="{{item.isRowspan}}" rowspan="{{item.rowspan}}">{{item.Contract_Number}} -
+                                    {{item.Representative}}</td>
+                                @* <td ng-show="{{item.isRowspan}}" rowspan="{{item.rowspan}}" style="text-align: center;">
+                                    {{item.SignedEmployeeName}}
+                                </td> *@
+                                <td ng-show="{{item.isRowspan}}" rowspan="{{item.rowspan}}" style="text-align: center;">
+                                    <img data-bs-popup="tooltip"
+                                         data-bs-original-title='{{item.SignedEmployeeName}}' style="height: 4em" src="{{item.Host}}{{item.Path}}" />
+                                </td>
+                                <td>{{item.Name}}</td>
+                                <td style="text-align: center;">{{item.ServiceProcess}}%</td>
+                                <td style="max-width: 450px;">
+                                    <span class="bg-opacity-20 mb-1 me-1"
+                                        ng-click="ContractDetail.ChangeStatus(item.Contract_ID, item.Service_Type_ID, eitem.Detail_ID)"
+                                        ng-class="eitem.Status_ID == 0 ? (ContractDetail.IsOverdue(eitem.Completion_Date) ? 'badge bg-danger text-danger' : 'badge bg-dark text-reset') : 'badge bg-success text-success'"
+                                        data-bs-popup="tooltip"
+                                        data-bs-original-title='{{eitem.Completion_Date}} - {{eitem.FullName}}'
+                                        ng-repeat="eitem in item.Details">{{eitem.StepName}}</span>
+                                </td>
+                                <td ng-show="{{item.isRowspan}}" rowspan="{{item.rowspan}}" style="text-align: center;">
+                                    {{item.Value | number}} VNĐ</td>
+                            </tr>
+
+                            <tr ng-show="ContractDetail.ProgressTable.length == 0" style="text-align:center">
+                                <td colspan="7">Không có dữ liệu</td>
+                            </tr>
+                            <tr ng-show="ContractDetail.ProgressTable.length > 0">
+                                <td colspan="6">
+                                    <div style="text-align:right;padding:0px;">
+                                        <pagination-style3 total-items="ContractDetail.Pager.TotalItems" pager="ContractDetail.Pager" fn-call-back="ContractDetail.Search.Paging(PageClicked)"></pagination-style3>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- /content area -->
+@section jsScript {
+    <script
+        src="~/script-handler/contract/contract-detail-manager-controller/contract-detail-manager-controller.js"></script>
+}
