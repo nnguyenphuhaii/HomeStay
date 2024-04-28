@@ -33,5 +33,10 @@ namespace tpm.business
 		int ChangeStepStatus(ContractChangeStepStatusReq obj);
 		IEnumerable<AllContractDetailRes> GetAllContractDetail(ContractDetailManagerPagingReq data);
 		IEnumerable<AllContractDetailRes> ContractDetailFilter(FilterReq obj);
+
+        #region HomeStay
+        public IEnumerable<GetAvailableRoomsRes> GetAvailableRooms();
+		public IEnumerable<GetRoomDetailRes> GetRoomDetail(GetRoomDetailReq roomID);
+        #endregion
     }
 }

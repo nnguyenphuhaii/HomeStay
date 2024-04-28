@@ -764,5 +764,44 @@ namespace tpm.business
 			}
         }
         #endregion
+
+        #region HomeStay
+        public IEnumerable<GetAvailableRoomsRes> GetAvailableRooms()
+        {
+            try
+            {
+                var result = _objReadOnlyRepository.Value.StoreProcedureQuery<GetAvailableRoomsRes>("dbo.GetAvailableRooms");
+                if (result == null)
+                {
+                    result = new List<GetAvailableRoomsRes>();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi và ném ra ngoại lệ
+                throw new Exception("Có lỗi xảy ra trong quá trình thực thi stored procedure.", ex);
+            }
+        }
+		public IEnumerable<GetRoomDetailRes> GetRoomDetail(GetRoomDetailReq roomID)
+        {
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("@room_id", roomID.room_id);
+                var result = _objReadOnlyRepository.Value.StoreProcedureQuery<GetRoomDetailRes>("dbo.GetRoomDetails", param);
+                if (result == null)
+                {
+                    result = new List<GetRoomDetailRes>();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi và ném ra ngoại lệ
+                throw new Exception("Có lỗi xảy ra trong quá trình thực thi stored procedure.", ex);
+            }
+        }
+        #endregion
     }
 }

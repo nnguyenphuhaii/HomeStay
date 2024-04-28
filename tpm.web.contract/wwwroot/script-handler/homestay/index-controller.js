@@ -1,37 +1,34 @@
 ﻿var IndexController = ($scope, $rootScope, $timeout, $filter, ApiHelper, UtilFactory, DataFactory, $q, CommonFactory) => {
     $scope.home = {}
-    $scope.home.roomInfo = [
-        {
-            RoomID: 1,
-            RoomName: "Duck",
-            Status: 0,
-            Note: "string"
-        },
-        {
-            RoomID: 2,
-            RoomName: "Dove",
-            Status: 1,
-            Note: "string"
-        },
-        {
-            RoomID: 3,
-            RoomName: "Flamingo",
-            Status: 0,
-            Note: "string"
-        },
-        {
-            RoomID: 4,
-            RoomName: "Sheep",
-            Status: 0,
-            Note: "string"
-        },
-        {
-            RoomID: 5,
-            RoomName: "Mr Bean",
-            Status: 1,
-            Note: "string"
-        }
-    ]
+    $scope.home.GetAvailableRooms = function () {
+        CommonFactory.PostDataAjax("/Home/GetAvailableRooms", {},
+            function (beforeSend) {
+            },
+            function (response) {
+                $timeout(function () {
+                    if (response.objCodeStep.Status == jAlert.Status.Error) {
+                        jAlert.Error(response.objCodeStep.Message);
+                    }
+                    else if (response.objCodeStep.Status == jAlert.Status.Warning) {
+                        jAlert.Warning(response.objCodeStep.Message);
+                    }
+                    else if (response.objCodeStep.Status == jAlert.Status.Success) {
+                        $scope.home.roomInfo = response.AvailableRooms || [];
+                    }
+                });
+
+            },
+            function (error) {
+                jAlert.Error(error.Message);
+            }
+        );
+    };
+    $scope.fillCurrentDay = function () {
+        var currentDateFormatted = moment().format('DD/MM/YYYY');
+        $scope.Date = currentDateFormatted;
+    }
+    $scope.home.GetAvailableRooms();
+    $scope.fillCurrentDay();
 }
 IndexController.$inject = ["$scope", "$rootScope", "$timeout", "$filter", "ApiHelper", "UtilFactory", "DataFactory", "$q", "CommonFactory"];
 addController("IndexController", IndexController);
@@ -79,29 +76,6 @@ var DateTimePickers = function () {
         }
     }
 }();
-
-jQuery(function ($) {
-    $.datepicker.regional["vi-VN"] =
-    {
-        closeText: "Đóng",
-        prevText: "Trước",
-        nextText: "Sau",
-        currentText: "Hôm nay",
-        monthNames: ["Tháng một", "Tháng hai", "Tháng ba", "Tháng tư", "Tháng năm", "Tháng sáu", "Tháng bảy", "Tháng tám", "Tháng chín", "Tháng mười", "Tháng mười một", "Tháng mười hai"],
-        monthNamesShort: ["Một", "Hai", "Ba", "Bốn", "Năm", "Sáu", "Bảy", "Tám", "Chín", "Mười", "Mười một", "Mười hai"],
-        dayNames: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"],
-        dayNamesShort: ["CN", "Hai", "Ba", "Tư", "Năm", "Sáu", "Bảy"],
-        dayNamesMin: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
-        weekHeader: "Tuần",
-        dateFormat: "dd/mm/yy",
-        firstDay: 1,
-        isRTL: false,
-        showMonthAfterYear: false,
-        yearSuffix: ""
-    };
-
-    $.datepicker.setDefaults($.datepicker.regional["vi-VN"]);
-});
 
 document.addEventListener('DOMContentLoaded', function () {
     DateTimePickers.init();

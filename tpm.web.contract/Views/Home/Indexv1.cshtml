@@ -12,40 +12,32 @@
 
 <div class="content" ng-controller="IndexController" ng-cloak>
     <div class="content-inner">
+        <div class="input-group mb-2" style="max-width: 15%;">
+            <span class="input-group-text">
+                <i class="ph-calendar"></i>
+            </span>
+            <input type="text" id="Date" ng-model="Date" class="form-control datepicker-basic" placeholder="Chọn ngày">
+        </div>
         <div class="card">
             <div class="card-body">
-                <div class="input-group mb-2" style="max-width: 15%;">
-                    <span class="input-group-text">
-                        <i class="ph-calendar"></i>
-                    </span>
-                    <input type="text" id="Date" ng-model="Date" class="form-control datepicker-basic" placeholder="Chọn ngày">
-                </div>
                 <div class="table-responsive">
                     <table class="table table-bordered datatable-basic table-hover">
                         <thead>
                             <tr>
-                                <th style="text-align: center; max-width: 1em;">STT</th>
-                                <th style="text-align: center;">Tên phòng</th>
-                                <th style="text-align: center;">Trạng thái</th>
-                                <th style="text-align: center;">Ghi chú</th>
-                                <th style="text-align:center; width: 10rem;">Thao tác</th>
+                                <th style="text-align: center; width: 2rem;">STT</th>
+                                <th style="text-align: center; width: 8rem">Tên phòng</th>
+                                <th style="text-align: center; width: 10rem">Trạng thái</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr ng-repeat="item in home.roomInfo">
                                 <td>{{$index + 1}}</td>
-                                <td>{{item.RoomName}}</td>
-                                <td ng-bind ="item.Status == 0 ? 'Đang trống' : 'Đang được thuê'"></td>
-                                <td>{{item.Note}}</td>
-                                <td style="text-align: center; vertical-align: middle; padding: 0px; margin: 0;">
-                                    <a href="/ProductUnits/Edit/{{item.ProductUnitID}}"
-                                        <i class="icon-pencil7 icon-1x" title="Cập nhật"></i>
-                                    </a>
-                                    <a href="#" ng-click="ProductUnits.Delete(item.ProductUnitID)" class="text-danger">
-                                        <i class="icon-bin icon-1x" title="Xóa"></i>
+                                <td>
+                                    <a href="/Home/RoomDetail/{{item.room_id}}">
+                                        {{item.room_name}}
                                     </a>
                                 </td>
-                            </tr>
+                                <td ng-bind="item.status == 0 ? 'Đang trống' : item.status == 1 ? 'Đang được thuê' : ''"></td>
                             <tr ng-show="home.roomInfo == 0" style="text-align:center" class="ng-hide">
                                 <td colspan="5">Không có dữ liệu</td>
                             </tr>
@@ -56,7 +48,6 @@
         </div>
     </div>
 </div>
-
 
 @section jsScript {
     <script src="/script-handler/homestay/index-controller.js"></script>

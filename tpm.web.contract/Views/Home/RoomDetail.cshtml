@@ -1,0 +1,62 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    List<string> BreadCrumb = new List<string>();
+    //BreadCrumb.Add("<a href='index.html' class='breadcrumb-item'>name</a>");
+    BreadCrumb.Add("<span class='breadcrumb-item active'> Trang chủ</span>");
+    ViewBag.BreadCrumb = BreadCrumb;
+}
+<script src="~/assets/js/vendor/notifications/noty.min.js"></script>
+<script src="/libjs/plugins/jalert.js"></script>
+<script src="~/assets/js/vendor/pickers/datepicker.min.js"></script>
+<script src="~/assets/js/vendor/forms/selects/select2.min.js"></script>
+
+<script>
+    var room_id = @ViewBag.room_id;
+</script>
+
+<div class="content" ng-controller="RoomDetailController" ng-cloak>
+    <div class="content-inner">
+        <div class="card">
+            <div class="card-body">
+                <h1>{{home.roomDetail[0].room_name}}</h1>
+                <div class="table-responsive">
+                    <table class="table table-bordered datatable-basic table-hover">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center; width: 1rem;">STT</th>
+                                <th style="text-align: center; width: 8rem">Thời gian</th>
+                                <th style="text-align: center; width: 10rem">Khách thuê</th>
+                                <th style="text-align: center; width: 10rem">Ghi chú</th>
+                                <th style="text-align: center; width: 1rem">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in home.roomDetail">
+                                <td style="text-align: center;">{{$index + 1}}</td>
+                                <td>
+                                    {{item.start_time.Hours}}:{{item.start_time.Minutes}} - {{item.end_time.Hours}}:{{item.end_time.Minutes}}
+                                </td>
+                                <td>{{item.guest_name}}</td>
+                                <td>{{item.note}}</td>
+                                <td style="text-align: center;vertical-align: middle; padding: 0px; margin: 0; font-size: 17px">
+                                    <a href="#">
+                                        <i class="ph-note-pencil" title="Chi tiết"></i>
+                                    </a>
+                                    <a href="#" class="text-danger">
+                                        <i class="ph-trash" title="Xóa"></i>
+                                    </a>
+                                </td>
+                            <tr ng-show="home.roomDetail == 0" style="text-align:center" class="ng-hide">
+                                <td colspan="5">Không có dữ liệu</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section jsScript {
+    <script src="/script-handler/homestay/room-detail-controller.js"></script>
+}
