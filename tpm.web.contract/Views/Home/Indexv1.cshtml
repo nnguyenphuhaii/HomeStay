@@ -1,8 +1,8 @@
 ﻿@{
-	ViewData["Title"] = "Home Page";
-	List<string> BreadCrumb = new List<string>();
-	//BreadCrumb.Add("<a href='index.html' class='breadcrumb-item'>name</a>");
-	BreadCrumb.Add("<span class='breadcrumb-item active'> Trang chủ</span>");
+    ViewData["Title"] = "Home Page";
+    List<string> BreadCrumb = new List<string>();
+    //BreadCrumb.Add("<a href='index.html' class='breadcrumb-item'>name</a>");
+    BreadCrumb.Add("<span class='breadcrumb-item active'> Trang chủ</span>");
     ViewBag.BreadCrumb = BreadCrumb;
 }
 <script src="~/assets/js/vendor/notifications/noty.min.js"></script>
@@ -10,141 +10,54 @@
 <script src="~/assets/js/vendor/pickers/datepicker.min.js"></script>
 <script src="~/assets/js/vendor/forms/selects/select2.min.js"></script>
 
-<!-- Content area -->
-<div class="content" ng-controller="IndexController">
-	<!-- Search field -->
-	<div class="card">
-		<div class="card-body">
-			<div class="row">
-				<form ng-submit="Contract.Search.Paging(1)">
-					<div class="col-12">
-						<div class="input-group">
-							<div class="d-sm-flex align-items-sm-start" style="flex: 1 1 auto; margin-right: calc(.5 * var(--gutter-x));">
-								<div class="form-control-feedback form-control-feedback-start flex-grow-1 mb-3 mb-sm-0">
-									<input type="text" class="form-control" placeholder="Nhập thông tin để tìm kiếm" ng-model="Contract.Search.Value">
-									<div class="form-control-feedback-icon">
-										<i class="ph-magnifying-glass"></i>
-									</div>
-								</div>
-							</div>
-							<div class="col-2" style="border-radius: var(--border-radius); margin-right: calc(.5 * var(--gutter-x));">
-								<select id="search-criteria" style="border-radius: var(--border-radius);" class="form-control select" ng-model="Contract.Search.Criteria.Value">
-									<option value="" disabled selected>Tiêu chí</option>
-									<option ng-repeat="item in Contract.Search.Criteria.Lst" value="{{item}}">{{item}}</option>
-								</select>
-							</div>
-							<button type="submit" class="btn btn-primary" style="border-radius: var(--border-radius); margin-right: calc(.5 * var(--gutter-x));" ng-click="Contract.Search.Paging(1)" onClick="return false;">
-								<i class="ph-magnifying-glass me-2"></i>
-								Tìm Kiếm
-							</button>
-							<button type="button" class="btn btn-primary" onclick="window.location.href = '@Url.Action("CreateContract", "Contracts")';" style="border-radius: var(--border-radius);">
-								<i class="ph-plus me-2"></i>
-								Thêm Hợp Đồng
-							</button>
-						</div>
-					</div>
-				</form>
-			</div>
-			@* <div class="row">
-			<div class="form-check form-check-inline">
-			<input type="radio" name="radio-complete" class="form-check-input me-2" id="all" ng-model="Contract.selectedOption" ng-value="'all'" ng-change="Contract.CompleteFilter()" checked>
-			<label class="form-check-label" for="all">Tất cả</label>
-			</div>
-			<div class="form-check form-check-inline">
-			<input type="radio" name="radio-complete" class="form-check-input me-2" id="complete" ng-model="Contract.selectedOption" ng-value="'completed'" ng-change="Contract.CompleteFilter()">
-			<label class="form-check-label" for="complete">Hoàn thành</label>
-			</div>
-			<div class="form-check form-check-inline">
-			<input type="radio" name="radio-complete" class="form-check-input me-2" id="notComplete" ng-model="Contract.selectedOption" ng-value="'notCompleted'" ng-change="Contract.CompleteFilter()">
-			<label class="form-check-label" for="notComplete">Chưa hoàn thành</label>
-			</div>
-			</div> *@
-			<div class="pt-2 px-2 rounded rounded">
-				<div class="d-inline-flex align-items-center me-3">
-					<input type="radio" name="dr_li" id="dr_all" checked="" ng-model="Contract.selectedOption" ng-value="'all'" ng-change="Contract.CompleteFilter()">
-					<label class="ms-2" for="dr_all">Tất cả</label>
-				</div>
-
-				<div class="d-inline-flex align-items-center me-3">
-					<input type="radio" name="dr_li" id="dr_complete" ng-model="Contract.selectedOption" ng-value="'completed'" ng-change="Contract.CompleteFilter()">
-					<label class="ms-2" for="dr_complete">Hoàn thành</label>
-				</div>
-
-				<div class="d-inline-flex align-items-center">
-					<input type="radio" name="dr_li" id="dr_notComplete" ng-model="Contract.selectedOption" ng-value="'notCompleted'" ng-change="Contract.CompleteFilter()">
-					<label class="ms-2" for="dr_notComplete">Chưa hoàn thành</label>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- /search field -->
-	<div class="card">
-		<div class="table-responsive">
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th style="width: 105px;">Mã hợp đồng</th>
-						<th style="width: 300px;">Công ty</th>
-						@* <th>Ngày bắt đầu</th>
-						<th>Ngày kết thúc</th> *@
-						<th>Dịch vụ</th>
-						<th style="width: 125px;">Giá trị hợp đồng</th>
-						<th style="text-align:center; width: 4em">Avatar</th>
-						<th style="width: 150px;">Nhân viên</th>
-						<th style="width: 110px;">Trạng thái</th>
-						<th style="width: 65px;"></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr class="list-contract" ng-repeat="item in Contract.Lst">
-						<td>
-							<a href="/Contracts/Detail/{{item.Contract_ID}}">
-								{{item.Contract_Number}}
-							</a>
-						</td>
-						<td>{{item.Customer_Company_Name}}</td>
-						@* <td>2011/04/25</td>
-						<td>2011/04/25</td> *@
-						<th>
-							{{item.Shortname}}
-						</th>
-						<td>{{item.Value | number}}</td>
-						<td style="text-align:center"><img style="height: 3em" src="{{item.Host}}{{item.Path}}" /></td>
-						<td>{{item.FullName}}</td>
-						<td>
-							<span class="badge bg-danger bg-opacity-10 text-info"
-								  style="--bg-opacity: 1;color: rgba(var(--white-rgb), var(--text-opacity)) !important;background-color: rgba(var(--danger-rgb), var(--bg-opacity)) !important;">
-								CHT
-							</span>
-						</td>
-						<td style="text-align: center;vertical-align: middle; padding: 0px; margin: 0;">
-							<a href="/Contracts/ProgressManager/{{item.Contract_ID}}" class="text-info">
-								<i class="ph-squares-four" title="Tiến độ"></i>
-							</a>
-							<a href="/Contracts/Edit/{{item.Contract_ID}}">
-								<i class="icon-pencil7 icon-08x" title="Cập nhật"></i>
-							</a>
-							<a href="javascript:void(0);" id="sweet_warning" ng-click="Contract.Delete(item.Contract_ID);" class="text-danger">
-								<i class="icon-bin icon-08x" title="Xóa"></i>
-							</a>
-						</td>
-					</tr>
-					<tr ng-show="Contract.Lst.length == 0" style="text-align:center">
-						<td colspan="9">Không có dữ liệu</td>
-					</tr>
-					<tr ng-show="Contract.Lst.length > 0">
-						<td colspan="9">
-							<div style="text-align:right;padding:0px;">
-								<pagination-style3 total-items="Contract.Pager.TotalItems" pager="Contract.Pager" fn-call-back="Contract.Search.Paging(PageClicked)"></pagination-style3>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</div>
+<div class="content" ng-controller="IndexController" ng-cloak>
+    <div class="content-inner">
+        <div class="card">
+            <div class="card-body">
+                <div class="input-group mb-2" style="max-width: 15%;">
+                    <span class="input-group-text">
+                        <i class="ph-calendar"></i>
+                    </span>
+                    <input type="text" id="Date" ng-model="Date" class="form-control datepicker-basic" placeholder="Chọn ngày">
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered datatable-basic table-hover">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center; max-width: 1em;">STT</th>
+                                <th style="text-align: center;">Tên phòng</th>
+                                <th style="text-align: center;">Trạng thái</th>
+                                <th style="text-align: center;">Ghi chú</th>
+                                <th style="text-align:center; width: 10rem;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in home.roomInfo">
+                                <td>{{$index + 1}}</td>
+                                <td>{{item.RoomName}}</td>
+                                <td ng-bind ="item.Status == 0 ? 'Đang trống' : 'Đang được thuê'"></td>
+                                <td>{{item.Note}}</td>
+                                <td style="text-align: center; vertical-align: middle; padding: 0px; margin: 0;">
+                                    <a href="/ProductUnits/Edit/{{item.ProductUnitID}}"
+                                        <i class="icon-pencil7 icon-1x" title="Cập nhật"></i>
+                                    </a>
+                                    <a href="#" ng-click="ProductUnits.Delete(item.ProductUnitID)" class="text-danger">
+                                        <i class="icon-bin icon-1x" title="Xóa"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr ng-show="home.roomInfo == 0" style="text-align:center" class="ng-hide">
+                                <td colspan="5">Không có dữ liệu</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<!-- /content area -->
+
+
 @section jsScript {
-	<script src="/script-handler/homestay/index-controller.js"></script>
-} -->
+    <script src="/script-handler/homestay/index-controller.js"></script>
+}
