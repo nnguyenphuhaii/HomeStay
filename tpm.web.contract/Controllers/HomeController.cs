@@ -19,8 +19,8 @@ namespace tpm.web.contract.Controllers
         [MvcAuthorize]
         public IActionResult Index()
         {
-            return RedirectToAction("Index", "Contracts");
-            //return View("Indexv1");
+            //return RedirectToAction("Index", "Contracts");
+            return View("Indexv1");
         }
 
         [MvcAuthorize]
