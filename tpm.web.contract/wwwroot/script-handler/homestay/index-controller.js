@@ -14,6 +14,7 @@
                     }
                     else if (response.objCodeStep.Status == jAlert.Status.Success) {
                         $scope.home.roomInfo = response.AvailableRooms || [];
+                        console.log($scope.home.roomInfo);
                     }
                 });
 

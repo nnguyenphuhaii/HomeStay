@@ -2,6 +2,7 @@
     $scope.home = {};
     $scope.home.roomDetail = {};
     $scope.home.roomName = '';
+    $scope.home.roomInfo = [];
     $scope.GetRoomDetail = function () {
         CommonFactory.PostDataAjax("/Home/GetRoomDetail", { room_id: room_id },
             function (beforeSend) {
@@ -42,6 +43,35 @@
                 break;
         }
         console.log($scope.home.roomName)
+    };
+    $scope.setupPopup = function () {
+        $timeout(function () {
+            $('#RoomSelector').select2();
+            $('#RoomSelector').val(0).trigger('change');
+        }, 100);
+    };
+    $scope.home.GetAvailableRooms = function () {
+        CommonFactory.PostDataAjax("/Home/GetAvailableRooms", {},
+            function (beforeSend) {
+            },
+            function (response) {
+                $timeout(function () {
+                    if (response.objCodeStep.Status == jAlert.Status.Error) {
+                        jAlert.Error(response.objCodeStep.Message);
+                    }
+                    else if (response.objCodeStep.Status == jAlert.Status.Warning) {
+                        jAlert.Warning(response.objCodeStep.Message);
+                    }
+                    else if (response.objCodeStep.Status == jAlert.Status.Success) {
+                        $scope.home.roomInfo = response.AvailableRooms || [];
+                    }
+                });
+
+            },
+            function (error) {
+                jAlert.Error(error.Message);
+            }
+        );
     };
     $scope.GetRoomDetailsByDate = function () {
         CommonFactory.PostDataAjax("/Home/GetRoomDetailsByDate", { room_id: room_id, start_date: moment($scope.Date, "DD/MM/YYYY").format("YYYY-MM-DD"), end_date: moment($scope.Date, "DD/MM/YYYY").format("YYYY-MM-DD") },
@@ -103,6 +133,7 @@
     $scope.home.checkRoomName();
     $scope.fillCurrentDay();
     $scope.GetRoomDetailsByDate();
+    $scope.home.GetAvailableRooms();
 }
 RoomDetailController.$inject = ["$scope", "$rootScope", "$timeout", "$filter", "ApiHelper", "UtilFactory", "DataFactory", "$q", "CommonFactory"];
 addController("RoomDetailController", RoomDetailController);

@@ -28,14 +28,49 @@
             </div>
             <div class="col">
                 <div class="text-end">
-                    <button type="button" class="btn btn-success">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_booking" ng-click="setupPopup()">
                         <i class="ph-plus me-2"></i>
                         Đặt lịch
                     </button>
                 </div>
             </div>            
         </div>
-        
+        <!-- Basic modal -->
+        <div id="modal_booking" class="modal fade" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Đặt lịch</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-3" for="RoomSelector">Phòng</label>
+                            <select id="RoomSelector" ng-model="booking.roomSelected" class="form-control select" required>
+                                <option value="0" disabled>Chọn phòng</option>
+                                <option ng-repeat="item in home.roomInfo" value="{{item.room_id}}">{{item.room_name}}</option>
+                            </select>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-3" for="BookingDate">Ngày nhận phòng</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="ph-calendar"></i>
+                                </span>
+                                <input style="z-index: 9999!important;" type="text" id="BookingDate" ng-model="booking.start_date" class="form-control datepicker-basic" placeholder="Chọn ngày nhận phòng">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /basic modal -->
         <div class="card">
             <div class="card-body">
                 <h1>{{home.roomName}}</h1>
