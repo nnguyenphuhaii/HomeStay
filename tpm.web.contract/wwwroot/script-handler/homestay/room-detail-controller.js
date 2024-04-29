@@ -1,6 +1,7 @@
 ﻿var RoomDetailController = ($scope, $rootScope, $timeout, $filter, ApiHelper, UtilFactory, DataFactory, $q, CommonFactory) => {
     $scope.home = {};
     $scope.home.roomDetail = {};
+    $scope.home.roomName = '';
     $scope.GetRoomDetail = function () {
         CommonFactory.PostDataAjax("/Home/GetRoomDetail", { room_id: room_id },
             function (beforeSend) {
@@ -24,6 +25,23 @@
                 jAlert.Error(error.Message);
             }
         );
+    };
+    $scope.home.checkRoomName = function () {
+        switch (room_id) {
+            case 1: $scope.home.roomName = 'Phòng Duck';
+                break;
+            case 2: $scope.home.roomName = 'Phòng Dove';
+                break;
+            case 3: $scope.home.roomName = 'Phòng Flamingo';
+                break;
+            case 4: $scope.home.roomName = 'Phòng Sheep';
+                break;
+            case 5: $scope.home.roomName = 'Phòng Mr. Bean';
+                break;
+            default: $scope.home.roomName = 'ID phòng chưa được định nghĩa';
+                break;
+        }
+        console.log($scope.home.roomName)
     };
     $scope.GetRoomDetailsByDate = function () {
         CommonFactory.PostDataAjax("/Home/GetRoomDetailsByDate", { room_id: room_id, start_date: moment($scope.Date, "DD/MM/YYYY").format("YYYY-MM-DD"), end_date: moment($scope.Date, "DD/MM/YYYY").format("YYYY-MM-DD") },
@@ -82,6 +100,7 @@
         var currentDateFormatted = moment().format('DD/MM/YYYY');
         $scope.Date = currentDateFormatted;
     }
+    $scope.home.checkRoomName();
     $scope.fillCurrentDay();
     $scope.GetRoomDetailsByDate();
 }
