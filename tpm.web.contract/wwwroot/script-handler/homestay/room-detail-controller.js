@@ -52,6 +52,12 @@
             }
         );
     };
+    //$scope.$watch('Date', function () {
+    //    $scope.changeDetailByDate();
+    //});
+    $scope.changeDetailByDate = function () {
+        confirm('1');
+    };
     $scope.fillCurrentDay = function () {
         var currentDateFormatted = moment().format('DD/MM/YYYY');
         $scope.Date = currentDateFormatted;
