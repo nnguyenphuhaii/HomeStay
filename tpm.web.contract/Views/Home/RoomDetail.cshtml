@@ -16,13 +16,26 @@
 
 <div class="content" ng-controller="RoomDetailController" ng-cloak>
     <div class="content-inner">
-        <div class="input-group mb-2" style="max-width: 20%;">
-            <span class="input-group-text">
-                <i class="ph-calendar"></i>
-            </span>
-            <input type="text" id="Date" ng-model="Date" class="form-control datepicker-basic" placeholder="Chọn ngày">
-            <button type="button" class="btn btn-light" ng-click="changeDetailByDate()">Tra cứu</button>
+        <div class="row mb-2">
+            <div class="col-2">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="ph-calendar"></i>
+                    </span>
+                    <input type="text" id="Date" ng-model="Date" class="form-control datepicker-basic" placeholder="Chọn ngày">
+                    <button type="button" class="btn btn-light" ng-click="changeDetailByDate()">Tra cứu</button>
+                </div>
+            </div>
+            <div class="col">
+                <div class="text-end">
+                    <button type="button" class="btn btn-success">
+                        <i class="ph-plus me-2"></i>
+                        Đặt lịch
+                    </button>
+                </div>
+            </div>            
         </div>
+        
         <div class="card">
             <div class="card-body">
                 <h1>{{home.roomName}}</h1>
