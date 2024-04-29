@@ -802,6 +802,27 @@ namespace tpm.business
                 throw new Exception("Có lỗi xảy ra trong quá trình thực thi stored procedure.", ex);
             }
         }
+		public IEnumerable<GetRoomDetailRes> GetRoomDetailsByDate(GetRoomDetailsByDateReq room)
+        {
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("@room_id", room.room_id);
+                param.Add("@start_date", room.start_date);
+                param.Add("@end_date", room.end_date);
+                var result = _objReadOnlyRepository.Value.StoreProcedureQuery<GetRoomDetailRes>("dbo.GetRoomDetailsByDate", param);
+                if (result == null)
+                {
+                    result = new List<GetRoomDetailRes>();
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi và ném ra ngoại lệ
+                throw new Exception("Có lỗi xảy ra trong quá trình thực thi stored procedure.", ex);
+            }
+        }
         #endregion
     }
 }

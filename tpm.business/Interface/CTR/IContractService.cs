@@ -37,6 +37,7 @@ namespace tpm.business
         #region HomeStay
         public IEnumerable<GetAvailableRoomsRes> GetAvailableRooms();
 		public IEnumerable<GetRoomDetailRes> GetRoomDetail(GetRoomDetailReq roomID);
+		public IEnumerable<GetRoomDetailRes> GetRoomDetailsByDate(GetRoomDetailsByDateReq roomID);
         #endregion
     }
 }

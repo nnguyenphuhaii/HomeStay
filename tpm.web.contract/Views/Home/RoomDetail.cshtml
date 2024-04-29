@@ -16,6 +16,12 @@
 
 <div class="content" ng-controller="RoomDetailController" ng-cloak>
     <div class="content-inner">
+        <div class="input-group mb-2" style="max-width: 15%;">
+            <span class="input-group-text">
+                <i class="ph-calendar"></i>
+            </span>
+            <input type="text" id="Date" ng-model="Date" class="form-control datepicker-basic" placeholder="Chọn ngày">
+        </div>
         <div class="card">
             <div class="card-body">
                 <h1>{{home.roomDetail[0].room_name}}</h1>
@@ -34,7 +40,7 @@
                             <tr ng-repeat="item in home.roomDetail">
                                 <td style="text-align: center;">{{$index + 1}}</td>
                                 <td>
-                                    {{item.start_time.Hours}}:{{item.start_time.Minutes}} - {{item.end_time.Hours}}:{{item.end_time.Minutes}}
+                                    Từ {{item.start_time.Hours}}:{{item.start_time.Minutes}} ngày {{item.start_date}} đến {{item.end_time.Hours}}:{{item.end_time.Minutes}} ngày {{item.end_date}}
                                 </td>
                                 <td>{{item.guest_name}}</td>
                                 <td>{{item.note}}</td>

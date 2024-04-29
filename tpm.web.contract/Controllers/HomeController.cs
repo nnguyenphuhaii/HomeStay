@@ -135,5 +135,42 @@ namespace tpm.web.contract.Controllers
                 });
             }
         }
+        [HttpPost]
+        [MvcAuthorize(false)]
+        public JsonResult GetRoomDetailsByDate(GetRoomDetailsByDateReq room)
+        {
+            try
+            {
+                objCodeStep.Message = "Lỗi danh sách loại hợp đồng";
+                #region check loại hợp đồng trong cache all
+                var contractTypes = _contractService.GetRoomDetailsByDate(room);
+                if (contractTypes == null)
+                {
+                    objCodeStep.Status = JsonStatusViewModels.Warning;
+                    objCodeStep.Message = $"Không tìm thấy bất kỳ loại hợp đồng nào trong Database";
+                    return Json(new
+                    {
+                        objCodeStep = objCodeStep
+                    });
+                }
+                #endregion
+                objCodeStep.Message = "Load danh sách loại hợp đồng thành công";
+                objCodeStep.Status = JsonStatusViewModels.Success;
+                return Json(new
+                {
+                    objCodeStep = objCodeStep,
+                    RoomDetail = contractTypes
+                });
+            }
+            catch (Exception ex)
+            {
+                objCodeStep.Status = JsonStatusViewModels.Error;
+                objCodeStep.Message = ex.Message;
+                return Json(new
+                {
+                    objCodeStep = objCodeStep
+                });
+            }
+        }
     }
 }

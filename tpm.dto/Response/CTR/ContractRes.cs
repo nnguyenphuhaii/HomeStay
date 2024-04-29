@@ -57,6 +57,12 @@ namespace tpm.dto.admin
     {
         public int room_id { get; set; }
     }
+    public class GetRoomDetailsByDateReq
+    {
+        public int room_id { get; set; }
+        public string start_date { get; set; }
+        public string end_date { get; set;}
+    }
     public class GetRoomDetailRes
     {
         public string room_name { get; set;}
