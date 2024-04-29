@@ -25,7 +25,6 @@
             }
         );
     };
-    // Chưa xong
     $scope.GetRoomDetailsByDate = function () {
         CommonFactory.PostDataAjax("/Home/GetRoomDetailsByDate", { room_id: room_id, start_date: moment($scope.Date, "DD/MM/YYYY").format("YYYY-MM-DD"), end_date: moment($scope.Date, "DD/MM/YYYY").format("YYYY-MM-DD") },
             function (beforeSend) {
@@ -53,7 +52,31 @@
         );
     };
     $scope.changeDetailByDate = function () {
-        confirm($scope.Date);
+        var currentDay = moment($('#Date').val(), "DD/MM/YYYY").format("YYYY-MM-DD");
+        CommonFactory.PostDataAjax("/Home/GetRoomDetailsByDate", { room_id: room_id, start_date: currentDay, end_date: currentDay },
+            function (beforeSend) {
+            },
+            function (response) {
+                $timeout(function () {
+                    if (response.objCodeStep.Status == jAlert.Status.Error) {
+                        jAlert.Error(response.objCodeStep.Message);
+                    }
+                    else if (response.objCodeStep.Status == jAlert.Status.Warning) {
+                        jAlert.Warning(response.objCodeStep.Message);
+                    }
+                    else if (response.objCodeStep.Status == jAlert.Status.Success) {
+                        $scope.home.roomDetail = response.RoomDetail || [];
+                        for (let i = 0; i < $scope.home.roomDetail.length; i++) {
+                            $scope.home.roomDetail[i].start_date = moment($scope.home.roomDetail[i].start_date).format('DD/MM/YYYY');
+                            $scope.home.roomDetail[i].end_date = moment($scope.home.roomDetail[i].end_date).format('DD/MM/YYYY');
+                        }
+                    }
+                });
+            },
+            function (error) {
+                jAlert.Error(error.Message);
+            }
+        );
     };
     $scope.fillCurrentDay = function () {
         var currentDateFormatted = moment().format('DD/MM/YYYY');
@@ -76,6 +99,11 @@ var DateTimePickers = function () {
 
         $('.daterange-basic').daterangepicker({
             parentEl: '.content-inner'
+        });
+
+        $('.daterange-single').daterangepicker({
+            parentEl: '.content-inner',
+            singleDatePicker: true
         });
     };
 
