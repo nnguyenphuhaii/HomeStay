@@ -1,11 +1,13 @@
 ﻿//Alert
-var ALERT_TITLE = "Oops!";
-var ALERT_BUTTON_TEXT = "Xác nhận";
 
-if (document.getElementById) {
-    window.jAlert = function (txt, clas, loaiThongBao, icon, callback) {
-        createCustomAlert(txt, clas, loaiThongBao, icon, callback);
-    }
+document.addEventListener('DOMContentLoaded', function () {
+    Noty.overrideDefaults({
+        theme: 'limitless',
+        layout: 'topRight',
+        type: 'alert',
+        timeout: 2500
+    });
+    window.jAlert = {};
     window.jAlert.Status = { Success: "Success", Error: "Error", Warning: "Warning", Info: "Info" };
     window.jAlert.Success = function (message, callback) {
         BoxNotify.Callback = callback;
@@ -35,143 +37,97 @@ if (document.getElementById) {
         else if (objCodeStep.Status == window.jAlert.Status.Info)
             BoxNotify.Info(objCodeStep.Message);
     }
-}
-
-function createCustomAlert(txt, clas, loaiThongBao, icon, callback) {
-    d = document;
-    if (d.getElementById("modalContainer")) return;
-    mObj = d.getElementsByTagName("body")[0].appendChild(d.createElement("div"));
-    mObj.id = "modalContainer";
-    //mObj.style.height = d.documentElement.scrollHeight + "px";
-    mObj.className = "lockscreenCustom";
-
-    alertObj = mObj.appendChild(d.createElement("div"));
-    alertObj.id = "alertBox";
-    if (d.all && !window.opera) alertObj.style.top = document.documentElement.scrollTop + "px";
-    //alertObj.style.left = (d.documentElement.scrollWidth - alertObj.offsetWidth) / 2 + "px";
-    //alertObj.style.visiblity = "visible";
-    alertObj.className = "SmallBox animated fadeInRight fast " + clas;
-
-    imageObj = alertObj.appendChild(d.createElement("div"));
-    imageObj.id = "imageBox"
-    imageObj.className = "foto";
-
-    i = imageObj.appendChild(d.createElement("i"));
-    i.className = "fa fa- " + icon + " swing animated";
-
-    titleObj = alertObj.appendChild(d.createElement("div"));
-    titleObj.className = "textoFoto";
-
-    span = titleObj.appendChild(d.createElement("span"));
-    span.appendChild(d.createTextNode(loaiThongBao));
-    p = titleObj.appendChild(d.createElement("p"));
-    p.style.maxHeight = 300 + "px";
-    p.style.overflow = "auto";
-    p.innerHTML = txt;
-
-    p1 = titleObj.appendChild(d.createElement("p"));
-    p1.className = "text-align-right";
-
-    btn = p1.appendChild(d.createElement("a"));
-    btn.id = "closeBtn";
-    btn.appendChild(d.createTextNode(ALERT_BUTTON_TEXT));
-    btn.href = "#";
-    btn.focus();
-    btn.className = "btn btn-primary btn-sm";
-    btn.onclick = function () {
-        removeCustomAlert();
-        if (callback != undefined)
-            callback(callback);
-        return false;
-    }
-
-    alertObj.style.display = "block";
-}
-function removeCustomAlert() {
-    document.getElementsByTagName("body")[0].removeChild(document.getElementById("modalContainer"));
-}
+});
 
 function jConfirm(caption, message, callback) {
-    $.SmartMessageBox({
+    let swalInit = swal.mixin({
+        buttonsStyling: false,
+        customClass: {
+            confirmButton: 'btn btn-primary',
+            cancelButton: 'btn btn-light'
+        }
+    });
+    swalInit.fire({
         title: caption,
-        content: message,
-        buttons: '[Không][Đồng ý]'
-    }, function (ButtonPressed) {
-        if (ButtonPressed === "Đồng ý") {
-            $('.MessageBoxButtonSection').remove();
+        text: message,
+        icon: 'warning',
+        confirmButtonText: 'Chấp nhận',
+        cancelButtonText: 'Không',
+        showCancelButton: true,
+        customClass: {
+            confirmButton: 'btn btn-danger',
+            cancelButton: 'btn btn-light'
+        },
+        focusConfirm: false
+    }).then(function (result) {
+        if (result.value) {
             callback(true);
         }
-        if (ButtonPressed === "Không") {
+        else if (result.dismiss === swal.DismissReason.cancel) {
             callback(false);
         }
     });
-    $('.MessageBoxButtonSection').find('#bot1-Msg1').focus();
+    //$('.swal2-actions').find('button.stc-swal2-close').focus();
 }
 
 var BoxNotify = {
     Callback: undefined,
-    Ini: function (message, icon, style) {
-        var div = '<div class="boxNotify animated fadeInDown ' + style + '" >';
-        div += '<div class="boxIcon"><i class="' + icon + '"></i></div>';
-        div += '<div class="boxText">';
-        div += message;
-        div += '</div></div>';
-        var div = $(div);
-        if ($("#divSmallBoxes").length > 0) {
-            $("#divSmallBoxes").prepend(div);
-            this.autoRemove(div, BoxNotify.Callback);
-        } else {
-            $("body").append('<div id="divSmallBoxes">' + div + '</div>');
-            this.autoRemove(div, BoxNotify.Callback);
-        }
-    },
     Success: function (message) {
-        this.Ini(message, 'fa fa-check-circle animated bounce', 'boxNotifySuccess');
+        let option = {
+            text: message,
+            type: 'success'
+        };
+        if (this.Callback != undefined && typeof this.Callback === "function")
+            option.callbacks = {
+                afterClose: this.Callback
+            };
+        new Noty(option).show();
     },
     Error: function (message) {
-        this.Ini(message, 'fa fa-times-circle shake animated', 'boxNotifyError');
+        let option = {
+            text: message,
+            type: 'error'
+        };
+        if (this.Callback != undefined && typeof this.Callback === "function")
+            option.callbacks = {
+                afterClose: this.Callback
+            };
+        new Noty(option).show();
     },
     Warning: function (message) {
-        this.Ini(message, 'fa fa-warning animated swing', 'boxNotifyWarning');
+        let option = {
+            text: message,
+            type: 'warning'
+        };
+        if (this.Callback != undefined && typeof this.Callback === "function")
+            option.callbacks = {
+                afterClose: this.Callback
+            };
+        new Noty(option).show();
     },
     Info: function (message) {
-        this.Ini(message, 'fa fa-info-circle animated rotateIn', 'boxNotifyInfo');
+        let option = {
+            text: message,
+            type: 'info'
+        };
+        if (this.Callback != undefined && typeof this.Callback === "function")
+            option.callbacks = {
+                afterClose: this.Callback
+            };
+        new Noty(option).show();
     },
-    autoRemove: function (obj, callback) {
-        $(obj).click(function () {
-            $(obj).animate({
-                right: "-=410",
-            }, 500, function () {
-                this.remove();
-                if (callback != undefined && typeof callback === "function")
-                    callback();
-            });
-        });
-        var time = setTimeout(function () {
-            $(obj).animate({
-                right: "-=410",
-            }, 500, function () {
-                this.remove();
-                if (callback != undefined && typeof callback === "function")
-                    callback();
-            });
-        }, 5000);
-        $(obj).hover(function () {
-            clearTimeout(time);
-        }, function () {
-            $(obj).animate({
-                right: "-=410",
-            }, 500, function () {
-                this.remove();
-                if (callback != undefined && typeof callback === "function")
-                    callback();
-            });
-        });
+    /*
+     callbacks: {
+        beforeShow: function() {},
+        onShow: function() {},
+        afterShow: function() {},
+        onClose: function() {},
+        afterClose: function() {},
+        onHover: function() {},
+        onTemplate: function() {
+            this.barDom.innerHTML = '<div class="my-custom-template noty_body">' + this.options.text + '<div>';
+            // Important: .noty_body class is required for setText API method.
+        }
     }
+     * */
 };
-Noty.overrideDefaults({
-    theme: 'limitless',
-    layout: 'topRight',
-    type: 'alert',
-    timeout: 2500
-});

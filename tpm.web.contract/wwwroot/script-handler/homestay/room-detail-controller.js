@@ -52,11 +52,8 @@
             }
         );
     };
-    //$scope.$watch('Date', function () {
-    //    $scope.changeDetailByDate();
-    //});
     $scope.changeDetailByDate = function () {
-        confirm('1');
+        confirm($scope.Date);
     };
     $scope.fillCurrentDay = function () {
         var currentDateFormatted = moment().format('DD/MM/YYYY');
@@ -79,11 +76,6 @@ var DateTimePickers = function () {
 
         $('.daterange-basic').daterangepicker({
             parentEl: '.content-inner'
-        });
-
-        $('.daterange-single').daterangepicker({
-            parentEl: '.content-inner',
-            singleDatePicker: true
         });
     };
 
