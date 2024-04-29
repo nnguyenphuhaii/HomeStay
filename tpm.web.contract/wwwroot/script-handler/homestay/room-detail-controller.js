@@ -138,51 +138,10 @@
 RoomDetailController.$inject = ["$scope", "$rootScope", "$timeout", "$filter", "ApiHelper", "UtilFactory", "DataFactory", "$q", "CommonFactory"];
 addController("RoomDetailController", RoomDetailController);
 
-//#region DatePicker
-var DateTimePickers = function () {
-
-    const _componentDaterange = function () {
-        if (!$().daterangepicker) {
-            console.warn('Warning - daterangepicker.js is not loaded.');
-            return;
-        }
-
-        $('.daterange-basic').daterangepicker({
-            parentEl: '.content-inner'
-        });
-
-        $('.daterange-single').daterangepicker({
-            parentEl: '.content-inner',
-            singleDatePicker: true
-        });
-    };
-
-    const _componentDatepicker = function () {
-        if (typeof Datepicker == 'undefined') {
-            console.warn('Warning - datepicker.min.js is not loaded.');
-            return;
-        }
-
-        $('.datepicker-basic').each(function () {
-            new Datepicker(this, {
-                container: '.content-inner',
-                buttonClass: 'btn',
-                prevArrow: document.dir == 'rtl' ? '&rarr;' : '&larr;',
-                nextArrow: document.dir == 'rtl' ? '&larr;' : '&rarr;',
-                format: 'dd/mm/yyyy'
-            });
-        });
-    };
-
-    return {
-        init: function () {
-            _componentDaterange();
-            _componentDatepicker();
-        }
+$('.daterange-time').daterangepicker({
+    parentEl: '.content-inner',
+    timePicker: true,
+    locale: {
+        format: 'MM/DD/YYYY h:mm a'
     }
-}();
-
-document.addEventListener('DOMContentLoaded', function () {
-    DateTimePickers.init();
 });
-//#endregion
