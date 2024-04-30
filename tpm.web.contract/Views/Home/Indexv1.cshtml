@@ -12,12 +12,83 @@
 
 <div class="content" ng-controller="IndexController" ng-cloak>
     <div class="content-inner">
-        <div class="input-group mb-2" style="max-width: 15%;">
+        @* <div class="input-group mb-2" style="max-width: 15%;">
             <span class="input-group-text">
                 <i class="ph-calendar"></i>
             </span>
             <input type="text" id="Date" ng-model="Date" class="form-control datepicker-basic" placeholder="Chọn ngày">
         </div>
+ *@
+        <div class="row mb-2">
+            <div class="col-2">
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="ph-calendar"></i>
+                    </span>
+                    <input type="text" id="Date" ng-model="Date" class="form-control datepicker-basic" placeholder="Chọn ngày">
+                </div>
+            </div>
+            <div class="col">
+                <div class="text-end">
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal_booking" ng-click="setupPopup()">
+                        <i class="ph-plus me-2"></i>
+                        Đặt lịch
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Basic modal -->
+        <div id="modal_booking" class="modal fade" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Đặt lịch</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-3" for="RoomSelector">Phòng</label>
+                            <div class="col-sm-9">
+                                <select id="RoomSelector" ng-model="booking.roomSelected" class="form-control select" required>
+                                    <option value="0" disabled>Chọn phòng</option>
+                                    <option ng-repeat="item in home.roomInfo" value="{{item.room_id}}">{{item.room_name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-3" for="BookingDate">Thời gian đặt phòng</label>
+                            <div class="col-sm-9">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ph-calendar"></i></span>
+                                    <input id="datePicker" type="text" ng-model="booking.dateRangeBooking" class="form-control daterange-time" value="05/18/2024 - 05/23/2024">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-3" for="guest_name">Tên khách</label>
+                            <div class="col-sm-9">
+                                <input id="guest_name" type="text" class="form-control" ng-model="booking.guest_name" placeholder="Tên khách">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-3" for="note">Ghi chú</label>
+                            <div class="col-sm-9">
+                                <input id="note" type="text" class="form-control" ng-model="booking.note" placeholder="Ghi chú">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-link" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-primary" ng-click="booking.book()">Đặt lịch</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /basic modal -->
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">

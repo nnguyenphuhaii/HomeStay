@@ -178,20 +178,20 @@ namespace tpm.web.contract.Controllers
         {
             try
             {
-                objCodeStep.Message = "Lỗi danh sách loại hợp đồng";
+                objCodeStep.Message = "Lỗi khi thêm lịch hẹn";
                 #region check loại hợp đồng trong cache all
                 var bookingStatus = _contractService.RoomBooking(booking);
                 if (bookingStatus == false)
                 {
                     objCodeStep.Status = JsonStatusViewModels.Warning;
-                    objCodeStep.Message = $"Không tìm thấy bất kỳ loại hợp đồng nào trong Database";
+                    objCodeStep.Message = "Lịch hẹn đã bị trùng";
                     return Json(new
                     {
                         objCodeStep = objCodeStep
                     });
                 }
                 #endregion
-                objCodeStep.Message = "Load danh sách loại hợp đồng thành công";
+                objCodeStep.Message = "Thêm lịch hẹn thành công";
                 objCodeStep.Status = JsonStatusViewModels.Success;
                 return Json(new
                 {

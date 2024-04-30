@@ -66,6 +66,7 @@ namespace tpm.dto.admin
     public class GetRoomDetailRes
     {
         public string room_name { get; set;}
+        public string booking_id { get; set;}
         public string start_date { get; set;}
         public string end_date { get; set;}
         public TimeSpan start_time { get; set;}

@@ -1,5 +1,6 @@
 ﻿var IndexController = ($scope, $rootScope, $timeout, $filter, ApiHelper, UtilFactory, DataFactory, $q, CommonFactory) => {
     $scope.home = {}
+    $scope.booking = {};
     $scope.home.GetAvailableRooms = function () {
         CommonFactory.PostDataAjax("/Home/GetAvailableRooms", {},
             function (beforeSend) {
@@ -24,6 +25,69 @@
             }
         );
     };
+
+    $scope.setupPopup = function () {
+        $timeout(function () {
+            $('#RoomSelector').select2();
+            $('#RoomSelector').val(0).trigger('change');
+        }, 100);
+
+    };
+
+    $scope.convertTo24Hour = function (time) {
+        // Tách giờ và phút từ chuỗi thời gian
+        var splitTime = time.split(':');
+        var hour = parseInt(splitTime[0]);
+        var minute = parseInt(splitTime[1]);
+
+        // Nếu là PM và không phải 12 giờ, thì thêm 12 giờ
+        if (time.toLowerCase().includes('pm') && hour !== 12) {
+            hour += 12;
+        }
+
+        // Nếu là AM và là 12 giờ, thì giảm 12 giờ
+        if (time.toLowerCase().includes('am') && hour === 12) {
+            hour = 0;
+        }
+
+        // Định dạng lại giờ và phút
+        var formattedHour = (hour < 10) ? '0' + hour : hour;
+        var formattedMinute = (minute < 10) ? '0' + minute : minute;
+
+        // Trả về chuỗi thời gian 24 giờ
+        return formattedHour + ':' + formattedMinute;
+    };
+
+    $scope.booking.book = function () {
+        if ($scope.booking.roomSelected == undefined || $scope.booking.guest_name == undefined ||
+            $scope.booking.dateRangeBooking == undefined) {
+            jAlert.Warning('Vui lòng điền đủ các trường để thêm lịch hẹn!');
+        } else {
+            var [start_date, start_time, end_date, end_time] = $scope.booking.dateRangeBooking.match(/\d{2}\/\d{2}\/\d{4}|(?<=\d{4} )\d{1,2}:\d{2} (am|pm)/g);
+            CommonFactory.PostDataAjax("/Home/RoomBooking", { room_id: $scope.booking.roomSelected, start_date: start_date, end_date: end_date, start_time: $scope.convertTo24Hour(start_time), end_time: $scope.convertTo24Hour(end_time), guest_name: $scope.booking.guest_name, note: $scope.booking.note },
+                function (beforeSend) {
+                },
+                function (response) {
+                    $timeout(function () {
+                        if (response.objCodeStep.Status == jAlert.Status.Error) {
+                            jAlert.Error(response.objCodeStep.Message);
+                        }
+                        else if (response.objCodeStep.Status == jAlert.Status.Warning) {
+                            jAlert.Warning(response.objCodeStep.Message);
+                        }
+                        else if (response.objCodeStep.Status == jAlert.Status.Success) {
+                            jAlert.Success(response.objCodeStep.Message);
+                            $scope.changeDetailByDate();
+                        }
+                    });
+                },
+                function (error) {
+                    jAlert.Error(error.Message);
+                }
+            );
+        }
+    };
+
     $scope.fillCurrentDay = function () {
         var currentDateFormatted = moment().format('DD/MM/YYYY');
         $scope.Date = currentDateFormatted;
@@ -47,9 +111,12 @@ var DateTimePickers = function () {
             parentEl: '.content-inner'
         });
 
-        $('.daterange-single').daterangepicker({
+        $('.daterange-time').daterangepicker({
             parentEl: '.content-inner',
-            singleDatePicker: true
+            timePicker: true,
+            locale: {
+                format: 'MM/DD/YYYY h:mm a'
+            }
         });
     };
 
@@ -79,6 +146,10 @@ var DateTimePickers = function () {
 }();
 
 document.addEventListener('DOMContentLoaded', function () {
+    var currentDateFormatted = moment().format('MM/DD/YYYY');
+    var tomorrowDateFormatted = moment().add(2, 'day').format('MM/DD/YYYY');
+
+    $('#datePicker').attr('value', currentDateFormatted + ' - ' + tomorrowDateFormatted);
     DateTimePickers.init();
 });
 //#endregion

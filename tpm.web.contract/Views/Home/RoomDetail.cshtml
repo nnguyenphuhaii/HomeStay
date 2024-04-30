@@ -2,7 +2,7 @@
     ViewData["Title"] = "Home Page";
     List<string> BreadCrumb = new List<string>();
     //BreadCrumb.Add("<a href='index.html' class='breadcrumb-item'>name</a>");
-    BreadCrumb.Add("<span class='breadcrumb-item active'> Trang chủ</span>");
+    BreadCrumb.Add("<span class='breadcrumb-item active'> Quản lý phòng</span>");
     ViewBag.BreadCrumb = BreadCrumb;
 }
 <script src="~/assets/js/vendor/notifications/noty.min.js"></script>
@@ -59,7 +59,7 @@
                             <div class="col-sm-9">
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="ph-calendar"></i></span>
-                                    <input type="text" ng-model="booking.dateRangeBooking" class="form-control daterange-time" value="03/18/2024 - 03/23/2024">
+                                    <input id="datePicker" type="text" ng-model="booking.dateRangeBooking" class="form-control daterange-time" value="03/18/2024 - 03/23/2024">
                                 </div>
                             </div>
                         </div>
@@ -108,10 +108,7 @@
                                 <td>{{item.guest_name}}</td>
                                 <td>{{item.note}}</td>
                                 <td style="text-align: center;vertical-align: middle; padding: 0px; margin: 0; font-size: 17px">
-                                    <a href="#">
-                                        <i class="ph-note-pencil" title="Chi tiết"></i>
-                                    </a>
-                                    <a href="#" class="text-danger">
+                                    <a href="#" class="text-danger" ng-click="booking.delete(item.booking_id)">
                                         <i class="ph-trash" title="Xóa"></i>
                                     </a>
                                 </td>

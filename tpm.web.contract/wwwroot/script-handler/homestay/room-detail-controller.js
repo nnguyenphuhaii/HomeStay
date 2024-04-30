@@ -45,12 +45,14 @@
         }
         console.log($scope.home.roomName)
     };
+
     $scope.setupPopup = function () {
         $timeout(function () {
             $('#RoomSelector').select2();
             $('#RoomSelector').val(0).trigger('change');
         }, 100);
     };
+
     $scope.home.GetAvailableRooms = function () {
         CommonFactory.PostDataAjax("/Home/GetAvailableRooms", {},
             function (beforeSend) {
@@ -123,6 +125,7 @@
         // Trả về chuỗi thời gian 24 giờ
         return formattedHour + ':' + formattedMinute;
     };
+
     $scope.changeDetailByDate = function () {
         var currentDay = moment($('#Date').val(), "DD/MM/YYYY").format("YYYY-MM-DD");
         CommonFactory.PostDataAjax("/Home/GetRoomDetailsByDate", { room_id: room_id, start_date: currentDay, end_date: currentDay },
@@ -151,34 +154,46 @@
         );
         currentDay = null;
     };
+
     $scope.fillCurrentDay = function () {
         var currentDateFormatted = moment().format('DD/MM/YYYY');
         $scope.Date = currentDateFormatted;
     }
+
     $scope.booking.book = function () {
-        var [start_date, start_time, end_date, end_time] = $scope.booking.dateRangeBooking.match(/\d{2}\/\d{2}\/\d{4}|(?<=\d{4} )\d{1,2}:\d{2} (am|pm)/g);   
-        console.log('.')
-        CommonFactory.PostDataAjax("/Home/RoomBooking", { room_id: $scope.booking.roomSelected, start_date: start_date, end_date: end_date, start_time: $scope.convertTo24Hour(start_time), end_time: $scope.convertTo24Hour(end_time), guest_name: $scope.booking.guest_name, note: $scope.booking.note },
-            function (beforeSend) {
-            },
-            function (response) {
-                $timeout(function () {
-                    if (response.objCodeStep.Status == jAlert.Status.Error) {
-                        jAlert.Error(response.objCodeStep.Message);
-                    }
-                    else if (response.objCodeStep.Status == jAlert.Status.Warning) {
-                        jAlert.Warning(response.objCodeStep.Message);
-                    }
-                    else if (response.objCodeStep.Status == jAlert.Status.Success) {
-                        jAlert.Success(response.objCodeStep.Message);
-                    }
-                });
-            },
-            function (error) {
-                jAlert.Error(error.Message);
-            }
-        );
+        if ($scope.booking.roomSelected == undefined || $scope.booking.guest_name == undefined ||
+            $scope.booking.dateRangeBooking == undefined) {
+            jAlert.Warning('Vui lòng điền đủ các trường để thêm lịch hẹn!');
+        } else {
+            var [start_date, start_time, end_date, end_time] = $scope.booking.dateRangeBooking.match(/\d{2}\/\d{2}\/\d{4}|(?<=\d{4} )\d{1,2}:\d{2} (am|pm)/g);
+            CommonFactory.PostDataAjax("/Home/RoomBooking", { room_id: $scope.booking.roomSelected, start_date: start_date, end_date: end_date, start_time: $scope.convertTo24Hour(start_time), end_time: $scope.convertTo24Hour(end_time), guest_name: $scope.booking.guest_name, note: $scope.booking.note },
+                function (beforeSend) {
+                },
+                function (response) {
+                    $timeout(function () {
+                        if (response.objCodeStep.Status == jAlert.Status.Error) {
+                            jAlert.Error(response.objCodeStep.Message);
+                        }
+                        else if (response.objCodeStep.Status == jAlert.Status.Warning) {
+                            jAlert.Warning(response.objCodeStep.Message);
+                        }
+                        else if (response.objCodeStep.Status == jAlert.Status.Success) {
+                            jAlert.Success(response.objCodeStep.Message);
+                            $scope.changeDetailByDate();
+                        }
+                    });
+                },
+                function (error) {
+                    jAlert.Error(error.Message);
+                }
+            );
+        }
     };
+
+    $scope.booking.delete = function (booking_id) {
+        console.log(booking_id);
+    }
+
     $scope.home.checkRoomName();
     $scope.fillCurrentDay();
     $scope.GetRoomDetailsByDate();
@@ -237,6 +252,10 @@ var DateTimePickers = function () {
 }();
 
 document.addEventListener('DOMContentLoaded', function () {
+    var currentDateFormatted = moment().format('MM/DD/YYYY');
+    var tomorrowDateFormatted = moment().add(2, 'day').format('MM/DD/YYYY');
+
+    $('#datePicker').attr('value', currentDateFormatted + ' - ' + tomorrowDateFormatted);
     DateTimePickers.init();
 });
 //#endregion
