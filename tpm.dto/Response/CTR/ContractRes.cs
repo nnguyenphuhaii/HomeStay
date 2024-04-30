@@ -46,6 +46,10 @@ namespace tpm.dto.admin
         public int TotalRecords {  get; set; }
         public string UpdatedDate { get; set; }
     }
+    public class GetAvailableRoomsReq
+    {
+        public string check_date { get; set;}
+    }
     public class GetAvailableRoomsRes
     {
         public int? room_id { get; set; }

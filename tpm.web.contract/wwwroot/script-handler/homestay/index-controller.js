@@ -15,7 +15,6 @@
                     }
                     else if (response.objCodeStep.Status == jAlert.Status.Success) {
                         $scope.home.roomInfo = response.AvailableRooms || [];
-                        console.log($scope.home.roomInfo);
                     }
                 });
 
@@ -87,6 +86,30 @@
             );
         }
     };
+
+    $scope.changeDetailByDate = function () {
+        CommonFactory.PostDataAjax("/Home/GetAvailableRoomsByDate", { check_date: moment($('#Date').val(), 'DD/MM/YYYY').format('MM/DD/YYYY') },
+            function (beforeSend) {
+            },
+            function (response) {
+                $timeout(function () {
+                    if (response.objCodeStep.Status == jAlert.Status.Error) {
+                        jAlert.Error(response.objCodeStep.Message);
+                    }
+                    else if (response.objCodeStep.Status == jAlert.Status.Warning) {
+                        jAlert.Warning(response.objCodeStep.Message);
+                    }
+                    else if (response.objCodeStep.Status == jAlert.Status.Success) {
+                        $scope.home.roomInfo = response.AvailableRooms || [];
+                    }
+                });
+
+            },
+            function (error) {
+                jAlert.Error(error.Message);
+            }
+        );
+    }
 
     $scope.fillCurrentDay = function () {
         var currentDateFormatted = moment().format('DD/MM/YYYY');

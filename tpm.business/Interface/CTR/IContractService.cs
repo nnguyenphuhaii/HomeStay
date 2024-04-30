@@ -40,6 +40,7 @@ namespace tpm.business
 		public IEnumerable<GetRoomDetailRes> GetRoomDetailsByDate(GetRoomDetailsByDateReq roomID);
 		public bool RoomBooking(RoomBookingReq booking);
 		public bool DeleteBooking(DeleteBookingReq booking_id);
+		public IEnumerable<GetAvailableRoomsRes> GetAvailableRoomsByDate(GetAvailableRoomsReq check_date);
         #endregion
     }
 }

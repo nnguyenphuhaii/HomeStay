@@ -67,20 +67,55 @@ namespace tpm.web.contract.Controllers
         {
             try
             {
-                objCodeStep.Message = "Lỗi danh sách loại hợp đồng";
+                objCodeStep.Message = "Lỗi danh sách phòng";
                 #region check loại hợp đồng trong cache all
                 var contractTypes = _contractService.GetAvailableRooms();
                 if (contractTypes == null)
                 {
                     objCodeStep.Status = JsonStatusViewModels.Warning;
-                    objCodeStep.Message = $"Không tìm thấy bất kỳ loại hợp đồng nào trong Database";
                     return Json(new
                     {
                         objCodeStep = objCodeStep
                     });
                 }
                 #endregion
-                objCodeStep.Message = "Load danh sách loại hợp đồng thành công";
+                objCodeStep.Message = "Load danh sách phòng thành công";
+                objCodeStep.Status = JsonStatusViewModels.Success;
+                return Json(new
+                {
+                    objCodeStep = objCodeStep,
+                    AvailableRooms = contractTypes
+                });
+            }
+            catch (Exception ex)
+            {
+                objCodeStep.Status = JsonStatusViewModels.Error;
+                objCodeStep.Message = ex.Message;
+                return Json(new
+                {
+                    objCodeStep = objCodeStep
+                });
+            }
+        }
+        [HttpPost]
+        [MvcAuthorize(false)]
+        public JsonResult GetAvailableRoomsByDate(GetAvailableRoomsReq date)
+        {
+            try
+            {
+                objCodeStep.Message = "Lỗi danh sách phòng";
+                #region check loại hợp đồng trong cache all
+                var contractTypes = _contractService.GetAvailableRoomsByDate(date);
+                if (contractTypes == null)
+                {
+                    objCodeStep.Status = JsonStatusViewModels.Warning;
+                    return Json(new
+                    {
+                        objCodeStep = objCodeStep
+                    });
+                }
+                #endregion
+                objCodeStep.Message = "Load danh sách phòng thành công";
                 objCodeStep.Status = JsonStatusViewModels.Success;
                 return Json(new
                 {
