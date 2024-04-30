@@ -191,29 +191,31 @@
     };
 
     $scope.booking.delete = function (booking_id) {
-        console.log(booking_id);
-
-        CommonFactory.PostDataAjax("/Home/DeleteBooking", { booking_id: booking_id },
-            function (beforeSend) {
-            },
-            function (response) {
-                $timeout(function () {
-                    if (response.objCodeStep.Status == jAlert.Status.Error) {
-                        jAlert.Error(response.objCodeStep.Message);
+        jConfirm('Bạn có chắc chắn muốn xóa lịch hẹn này không?', 'Bạn sẽ không thể hoàn tác!!!', function (result) {
+            if (result) {
+                CommonFactory.PostDataAjax("/Home/DeleteBooking", { booking_id: booking_id },
+                    function (beforeSend) {
+                    },
+                    function (response) {
+                        $timeout(function () {
+                            if (response.objCodeStep.Status == jAlert.Status.Error) {
+                                jAlert.Error(response.objCodeStep.Message);
+                            }
+                            else if (response.objCodeStep.Status == jAlert.Status.Warning) {
+                                jAlert.Warning(response.objCodeStep.Message);
+                            }
+                            else if (response.objCodeStep.Status == jAlert.Status.Success) {
+                                jAlert.Success(response.objCodeStep.Message);
+                                $scope.changeDetailByDate();
+                            }
+                        });
+                    },
+                    function (error) {
+                        jAlert.Error(error.Message);
                     }
-                    else if (response.objCodeStep.Status == jAlert.Status.Warning) {
-                        jAlert.Warning(response.objCodeStep.Message);
-                    }
-                    else if (response.objCodeStep.Status == jAlert.Status.Success) {
-                        jAlert.Success(response.objCodeStep.Message);
-                        $scope.changeDetailByDate();
-                    }
-                });
-            },
-            function (error) {
-                jAlert.Error(error.Message);
+                );
             }
-        );
+        });
     }
 
     $scope.home.checkRoomName();
