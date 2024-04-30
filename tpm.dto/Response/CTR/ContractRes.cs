@@ -73,4 +73,14 @@ namespace tpm.dto.admin
         public string guest_name{ get; set;}
         public string note{ get; set;}
     }
+    public class RoomBookingReq
+    {
+        public int room_id { get; set;}
+        public string start_date { get; set;}
+        public string end_date { get; set;}
+        public string start_time { get; set;}
+        public string end_time { get; set;}
+        public string guest_name{ get; set;}
+        public string note{ get; set;}
+    }
 }

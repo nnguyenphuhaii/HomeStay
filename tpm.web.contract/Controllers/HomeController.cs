@@ -141,10 +141,47 @@ namespace tpm.web.contract.Controllers
         {
             try
             {
-                objCodeStep.Message = "Lỗi danh sách loại hợp đồng";
+                objCodeStep.Message = "Lỗi danh sách phòng";
                 #region check loại hợp đồng trong cache all
                 var contractTypes = _contractService.GetRoomDetailsByDate(room);
                 if (contractTypes == null)
+                {
+                    objCodeStep.Status = JsonStatusViewModels.Warning;
+                    objCodeStep.Message = $"Không tìm thấy bất kỳ loại hợp đồng nào trong Database";
+                    return Json(new
+                    {
+                        objCodeStep = objCodeStep
+                    });
+                }
+                #endregion
+                objCodeStep.Message = "Load chi tiết phòng thành công";
+                objCodeStep.Status = JsonStatusViewModels.Success;
+                return Json(new
+                {
+                    objCodeStep = objCodeStep,
+                    RoomDetail = contractTypes
+                });
+            }
+            catch (Exception ex)
+            {
+                objCodeStep.Status = JsonStatusViewModels.Error;
+                objCodeStep.Message = ex.Message;
+                return Json(new
+                {
+                    objCodeStep = objCodeStep
+                });
+            }
+        }
+        [HttpPost]
+        [MvcAuthorize(false)]
+        public JsonResult RoomBooking(RoomBookingReq booking)
+        {
+            try
+            {
+                objCodeStep.Message = "Lỗi danh sách loại hợp đồng";
+                #region check loại hợp đồng trong cache all
+                var bookingStatus = _contractService.RoomBooking(booking);
+                if (bookingStatus == false)
                 {
                     objCodeStep.Status = JsonStatusViewModels.Warning;
                     objCodeStep.Message = $"Không tìm thấy bất kỳ loại hợp đồng nào trong Database";
@@ -159,7 +196,7 @@ namespace tpm.web.contract.Controllers
                 return Json(new
                 {
                     objCodeStep = objCodeStep,
-                    RoomDetail = contractTypes
+                    RoomDetail = bookingStatus
                 });
             }
             catch (Exception ex)

@@ -47,23 +47,39 @@
                     <div class="modal-body">
                         <div class="row mb-3">
                             <label class="col-form-label col-sm-3" for="RoomSelector">Phòng</label>
-                            <select id="RoomSelector" ng-model="booking.roomSelected" class="form-control select" required>
-                                <option value="0" disabled>Chọn phòng</option>
-                                <option ng-repeat="item in home.roomInfo" value="{{item.room_id}}">{{item.room_name}}</option>
-                            </select>
+                            <div class="col-sm-9">
+                                <select id="RoomSelector" ng-model="booking.roomSelected" class="form-control select" required>
+                                    <option value="0" disabled>Chọn phòng</option>
+                                    <option ng-repeat="item in home.roomInfo" value="{{item.room_id}}">{{item.room_name}}</option>
+                                </select>
+                            </div>                            
                         </div>
                         <div class="row mb-3">
-                            <label class="col-form-label col-sm-3" for="BookingDate">Ngày nhận phòng</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="ph-calendar"></i></span>
-                                <input type="text" class="form-control daterange-time" value="03/18/2024 - 03/23/2024">
+                            <label class="col-form-label col-sm-3" for="BookingDate">Thời gian đặt phòng</label>
+                            <div class="col-sm-9">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="ph-calendar"></i></span>
+                                    <input type="text" ng-model="booking.dateRangeBooking" class="form-control daterange-time" value="03/18/2024 - 03/23/2024">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-3" for="guest_name">Tên khách</label>
+                            <div class="col-sm-9">
+                                <input id="guest_name" type="text" class="form-control" ng-model="booking.guest_name" placeholder="Tên khách">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-form-label col-sm-3" for="note">Ghi chú</label>
+                            <div class="col-sm-9">
+                                <input id="note" type="text" class="form-control" ng-model="booking.note" placeholder="Ghi chú">
                             </div>
                         </div>
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-link" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-link" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-primary" ng-click="booking.book()">Đặt lịch</button>
                     </div>
                 </div>
             </div>

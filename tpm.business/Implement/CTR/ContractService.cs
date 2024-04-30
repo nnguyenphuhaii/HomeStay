@@ -823,6 +823,28 @@ namespace tpm.business
                 throw new Exception("Có lỗi xảy ra trong quá trình thực thi stored procedure.", ex);
             }
         }
+        public bool RoomBooking(RoomBookingReq booking)
+        {
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("@room_id", booking.room_id);
+                param.Add("@start_date", booking.start_date);
+                param.Add("@end_date", booking.end_date);
+                param.Add("@start_time", booking.start_time);
+                param.Add("@end_time", booking.end_time);
+                param.Add("@guest_name", booking.guest_name);
+                param.Add("@note", booking.note);
+                var result = _objReadOnlyRepository.Value.Connection.ExecuteScalar<bool>("dbo.AddBooking", param, commandType: CommandType.StoredProcedure);
+				
+                return result;
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi và ném ra ngoại lệ
+                throw new Exception("Có lỗi xảy ra trong quá trình thực thi stored procedure.", ex);
+            }
+        }
         #endregion
     }
 }

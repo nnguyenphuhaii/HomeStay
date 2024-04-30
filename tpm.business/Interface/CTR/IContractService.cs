@@ -38,6 +38,7 @@ namespace tpm.business
         public IEnumerable<GetAvailableRoomsRes> GetAvailableRooms();
 		public IEnumerable<GetRoomDetailRes> GetRoomDetail(GetRoomDetailReq roomID);
 		public IEnumerable<GetRoomDetailRes> GetRoomDetailsByDate(GetRoomDetailsByDateReq roomID);
+		public bool RoomBooking(RoomBookingReq booking);
         #endregion
     }
 }
