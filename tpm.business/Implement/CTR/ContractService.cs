@@ -845,6 +845,22 @@ namespace tpm.business
                 throw new Exception("Có lỗi xảy ra trong quá trình thực thi stored procedure.", ex);
             }
         }
+		public bool DeleteBooking(DeleteBookingReq booking_id)
+        {
+            try
+            {
+                var param = new DynamicParameters();
+                param.Add("@booking_id", booking_id.booking_id);
+                var result = _objReadOnlyRepository.Value.Connection.ExecuteScalar<bool>("dbo.DeleteBooking", param, commandType: CommandType.StoredProcedure);
+				
+                return result;
+            }
+            catch (Exception ex)
+            {
+                // Xử lý lỗi và ném ra ngoại lệ
+                throw new Exception("Có lỗi xảy ra trong quá trình thực thi stored procedure.", ex);
+            }
+        }
         #endregion
     }
 }

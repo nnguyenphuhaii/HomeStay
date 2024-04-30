@@ -84,4 +84,8 @@ namespace tpm.dto.admin
         public string guest_name{ get; set;}
         public string note{ get; set;}
     }
+    public class DeleteBookingReq
+    {
+        public string booking_id { get; set; }
+    }
 }

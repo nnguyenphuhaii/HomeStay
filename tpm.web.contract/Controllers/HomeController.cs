@@ -180,8 +180,8 @@ namespace tpm.web.contract.Controllers
             {
                 objCodeStep.Message = "Lỗi khi thêm lịch hẹn";
                 #region check loại hợp đồng trong cache all
-                var bookingStatus = _contractService.RoomBooking(booking);
-                if (bookingStatus == false)
+                var deleteStatus = _contractService.RoomBooking(booking);
+                if (deleteStatus == false)
                 {
                     objCodeStep.Status = JsonStatusViewModels.Warning;
                     objCodeStep.Message = "Lịch hẹn đã bị trùng";
@@ -196,7 +196,42 @@ namespace tpm.web.contract.Controllers
                 return Json(new
                 {
                     objCodeStep = objCodeStep,
-                    RoomDetail = bookingStatus
+                    RoomDetail = deleteStatus
+                });
+            }
+            catch (Exception ex)
+            {
+                objCodeStep.Status = JsonStatusViewModels.Error;
+                objCodeStep.Message = ex.Message;
+                return Json(new
+                {
+                    objCodeStep = objCodeStep
+                });
+            }
+        }
+        [HttpPost]
+        [MvcAuthorize(false)]
+        public JsonResult DeleteBooking(DeleteBookingReq booking)
+        {
+            try
+            {
+                objCodeStep.Message = "Lỗi khi xóa lịch hẹn";
+                #region check loại hợp đồng trong cache all
+                var deleteStatus = _contractService.DeleteBooking(booking);
+                if (deleteStatus == false)
+                {
+                    objCodeStep.Status = JsonStatusViewModels.Warning;
+                    return Json(new
+                    {
+                        objCodeStep = objCodeStep
+                    });
+                }
+                #endregion
+                objCodeStep.Message = "Xóa lịch hẹn thành công";
+                objCodeStep.Status = JsonStatusViewModels.Success;
+                return Json(new
+                {
+                    objCodeStep = objCodeStep
                 });
             }
             catch (Exception ex)
