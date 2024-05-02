@@ -244,8 +244,19 @@ var DateTimePickers = function () {
         $('.daterange-time').daterangepicker({
             parentEl: '.content-inner',
             timePicker: true,
+            //locale: {
+            //    format: 'MM/DD/YYYY h:mm a'
+            //}
             locale: {
-                format: 'MM/DD/YYYY h:mm a'
+                applyLabel: 'Áp dụng',
+                cancelLabel: 'Hủy bỏ',
+                startLabel: 'Ngày bắt đầu',
+                endLabel: 'Ngày kết thúc',
+                customRangeLabel: 'Tùy chọn ngày',
+                daysOfWeek: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
+                monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                firstDay: 1,
+                format: 'DD/MM/YYYY H:mm'
             }
         });
     };
@@ -276,8 +287,8 @@ var DateTimePickers = function () {
 }();
 
 document.addEventListener('DOMContentLoaded', function () {
-    var currentDateFormatted = moment().format('MM/DD/YYYY');
-    var tomorrowDateFormatted = moment().add(2, 'day').format('MM/DD/YYYY');
+    var currentDateFormatted = moment().format('DD/MM/YYYY');
+    var tomorrowDateFormatted = moment().add(2, 'day').format('DD/MM/YYYY');
 
     $('#datePicker').attr('value', currentDateFormatted + ' - ' + tomorrowDateFormatted);
     DateTimePickers.init();
