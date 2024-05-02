@@ -63,7 +63,7 @@
             jAlert.Warning('Vui lòng điền đủ các trường để thêm lịch hẹn!');
         } else {
             var [start_date, start_time, end_date, end_time] = $scope.booking.dateRangeBooking.match(/\d{2}\/\d{2}\/\d{4}|(?<=\d{4} )\d{1,2}:\d{2} (am|pm)/g);
-            CommonFactory.PostDataAjax("/Home/RoomBooking", { room_id: $scope.booking.roomSelected, start_date: start_date, end_date: end_date, start_time: $scope.convertTo24Hour(start_time), end_time: $scope.convertTo24Hour(end_time), guest_name: $scope.booking.guest_name, note: $scope.booking.note },
+                CommonFactory.PostDataAjax("/Home/RoomBooking", { room_id: $scope.booking.roomSelected, start_date: moment(start_date, 'DD/MM/YYYY').format('MM/DD/YYYY'), end_date: moment(end_date, 'DD/MM/YYYY').format('MM/DD/YYYY'), start_time: $scope.convertTo24Hour(start_time), end_time: $scope.convertTo24Hour(end_time), guest_name: $scope.booking.guest_name, note: $scope.booking.note },
                 function (beforeSend) {
                 },
                 function (response) {
@@ -149,7 +149,7 @@ var DateTimePickers = function () {
                 daysOfWeek: ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'],
                 monthNames: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
                 firstDay: 1,
-                format: 'DD/MM/YYYY H:mm'
+                format: 'DD/MM/YYYY h:mm a'
             }
         });
     };
